@@ -1,6 +1,4 @@
-// controllers/ImageController.js
 const Image = require('../models/Image'); // 이미지 모델 가져오기
-const path = require('path');
 
 // 이미지 URL 생성
 const uploadImage = async (req, res) => {

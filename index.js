@@ -19,13 +19,12 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
+const uri = 'mongodb+srv://ehdals5387:MaDtZaA3kzR2BxDG@cluster0.ojoih7h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
 // MongoDB 연결
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB 연결 성공!'))
-.catch(err => console.error('MongoDB 연결 실패:', err));
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB 연결 성공!'))
+    .catch(err => console.error('MongoDB 연결 실패:', err));
 
 // 미들웨어 설정
 app.use(bodyParser.json());

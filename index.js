@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 
 // 라우터 가져오기
 const groupRoutes = require('./routes/GroupRoutes');
@@ -19,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-const uri = 'mongodb+srv://ehdals5387:MaDtZaA3kzR2BxDG@cluster0.ojoih7h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const uri = process.env.MONGODB_URI;
 
 // MongoDB 연결
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -31,7 +32,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // 정적 파일 서빙 설정 (이미지 업로드 등)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const uploadsPath = path.resolve(__dirname, 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsPath));
+
 
 // 라우터 설정
 app.use('/groups', groupRoutes);

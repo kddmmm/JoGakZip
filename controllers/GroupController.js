@@ -12,7 +12,12 @@ const createGroup = async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newGroup = new Group({ name, password: hashedPassword, imageUrl, isPublic, introduction });
     const badges = new Badge({ groupId: newGroup._id, badges: [] });
-    await newGroup.save();
+    await newGroup.save()
+        .then(() => res.status(201).send('그룹이 성공적으로 저장되었습니다.'))
+        .catch(err => {
+            console.error('저장 오류:', err);
+            res.status(400).send('저장 오류: ' + err.message);
+        });
     return res.status(201).json({newGroup});
 };
 

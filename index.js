@@ -40,11 +40,11 @@ app.use('/uploads', express.static(uploadsPath));
 
 
 // 라우터 설정
-app.use('/groups', groupRoutes);
-app.use('/posts', postRoutes);
-app.use('/comments', commentRoutes);
-app.use('/badges', badgeRoutes);
-app.use('/images', imageRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/badges', badgeRoutes);
+app.use('/api/images', imageRoutes);
 
 // 기본 라우트 (테스트용)
 app.get('/', (req, res) => {

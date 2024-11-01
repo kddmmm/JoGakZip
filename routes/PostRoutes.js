@@ -22,7 +22,7 @@ router.post('/:postId/verify-password', checkPostAccess);
 router.get('/:postId/is-public', isPostPublic);
 
 // 댓글 등록
-router.post('/:postId/comments', createComment);
+router.post('/postId/comments', createComment);
 
 // 댓글 목록 조회
 router.get('/:postId/comments', getCommentsByPost);

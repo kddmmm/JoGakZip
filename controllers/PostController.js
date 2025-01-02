@@ -199,7 +199,7 @@ const getPostByGroup = async (req, res) => {
             location: post.location,
             moment: post.moment,
             isPublic: post.isPublic,
-            likeCount: post.likes || 0,
+            likeCount: post.likeCount,
             commentCount: post.comments.length || 0,
             createdAt: post.createdAt,
         }))
@@ -232,26 +232,27 @@ const getPostById = async (req, res) => {
     });
 };
 
-// 게시글 비밀번호 확인
+// 게시글 조회 권환 확인
 const checkPostAccess = async (req, res) => {
     const postId = req.params.postId;
-    const { postPassword } = req.body;
+    const { password } = req.body;
 
-    try {
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: '게시글을 찾을 수 없습니다.' });
-        }
-
-        const isPasswordValid = await bcrypt.compare(postPassword, post.password);
-        if (!isPasswordValid) {
-            return res.status(403).json({ message: '비밀번호가 틀렸습니다' });
-        }
-
-        return res.status(200).json({ message: '비밀번호가 확인되었습니다' });
-    } catch (error) {
-        console.error(error);
+    if (!postId || postId.length !== 24) {
+        return res.status(400).json({ message: '유효하지 않은 게시글 ID입니다.' });
     }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+        return res.status(404).json({ message: '존재하지 않는 게시글입니다.' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, post.password);
+    if (!isPasswordValid) {
+        return res.status(403).json({ message: '비밀번호가 틀렸습니다' });
+    }
+
+    // 권한 확인 성공
+    return res.status(200).json({ message: '비밀번호가 확인되었습니다' });
 };
 
 // 게시글 공감하기
@@ -287,7 +288,7 @@ const isPostPublic = async (req, res) => {
 
     // 응답 형식에 맞게 데이터 반환
     return res.status(200).json({
-        id: post._id,
+        id: postId,
         isPublic: post.isPublic,
     });
 };

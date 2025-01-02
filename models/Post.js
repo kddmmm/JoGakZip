@@ -12,6 +12,7 @@ const postSchema = new mongoose.Schema({
     isPublic: { type: Boolean, default: true },
     groupId: { type: mongoose.Schema.Types.ObjectId, ref: 'Group' },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    likeCount: {type: Number, default: 0}
 }, { timestamps: true });
 
 module.exports = mongoose.model('Post', postSchema);

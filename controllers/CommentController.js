@@ -49,7 +49,7 @@ const updateComment = async (req, res) => {
 
     // 댓글 수정
     comment.content = content;
-    comment.nickname = nickname; // 닉네임도 수정 가능
+    comment.nickname = nickname; // 닉네임 수정 가능
     await comment.save();
 
     // 응답 형식에 맞게 데이터 반환

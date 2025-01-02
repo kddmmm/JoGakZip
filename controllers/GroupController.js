@@ -1,25 +1,38 @@
 const Group = require('../models/Group');
 const bcrypt = require('bcryptjs');
 const Badge = require('../models/Badge');
+
 //그룹 생성
-const createGroup = async(req, res) => {
-    // 요청 양식 오류
+const createGroup = async (req, res) => {
+    // 요청 양식 오류 처리
     const { name, password, imageUrl, isPublic, introduction } = req.body;
-    if(!name || !password || !imageUrl || typeof isPublic !== 'boolean' || !introduction) {
+    if (!name || !password || !imageUrl || typeof isPublic !== 'boolean' || !introduction) {
         return res.status(400).json({ message: '잘못된 요청입니다' });
     }
-    // 등록 성공
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newGroup = new Group({ name, password: hashedPassword, imageUrl, isPublic, introduction });
-    const badges = new Badge({ groupId: newGroup._id, badges: [] });
-    await newGroup.save()
-        .then(() => res.status(201).send('그룹이 성공적으로 저장되었습니다.'))
-        .catch(err => {
-            console.error('저장 오류:', err);
-            res.status(400).send('저장 오류: ' + err.message);
+
+    try {
+        // 그룹 및 배지 생성
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newGroup = new Group({
+            name,
+            password: hashedPassword,
+            imageUrl,
+            isPublic,
+            introduction
         });
-    return res.status(201).json({newGroup});
+        const badges = new Badge({ groupId: newGroup._id, badges: [] });
+
+        await newGroup.save();
+        await badges.save();
+
+        // 성공 응답
+        return res.status(201).json({ newGroup });
+    } catch (err) {
+        console.error('저장 오류:', err);
+        return res.status(400).json({ message: '저장 오류: ' + err.message });
+    }
 };
+
 
 //그룹 수정
 const updateGroup = async(req, res) => {
@@ -221,11 +234,10 @@ const likeGroup = async(req, res) => {
 };
 
 //그룹 공개 여부 확인
-const isGroupPublic = (req, res) => {
-    const { isPublic } = req.body;
-    if(isPublic == true){
-        res.status(202).json(isPublic);
-    }
+const isGroupPublic = async(req, res) => {
+    const id = req.params.groupId;
+    const group = await Group.findById(id);
+    res.status(200).json({ id: id, isPublic: group.isPublic });
 };
 
 module.exports = { createGroup, updateGroup, deleteGroup, getGroup, getGroupById, checkGroupAccess, likeGroup, isGroupPublic };

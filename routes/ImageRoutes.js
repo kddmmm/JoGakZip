@@ -18,6 +18,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // 이미지 URL 생성 라우트
-router.post('/upload', upload.single('image'), uploadImage); // 컨트롤러 사용
+router.post('/api/image', upload.single('image'), uploadImage); // 컨트롤러 사용
 
 module.exports = router;

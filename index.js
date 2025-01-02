@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-const uri = 'mongodb+srv://ehdals5387:MaDtZaA3kzR2BxDG@cluster0.ojoih7h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const uri = 'mongodb+srv://ehdals5387:jQLo9mz3ElPtJ3AN@cluster0.sgb7d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 // MongoDB 연결
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -40,11 +40,11 @@ app.use('/uploads', express.static(uploadsPath));
 
 
 // 라우터 설정
-app.use('/api/groups', groupRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/badges', badgeRoutes);
-app.use('/api/images', imageRoutes);
+app.use('/', groupRoutes);
+app.use('/', postRoutes);
+app.use('/', commentRoutes);
+app.use('/', badgeRoutes);
+app.use('/', imageRoutes);
 
 // 기본 라우트 (테스트용)
 app.get('/', (req, res) => {
